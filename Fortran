@@ -1,0 +1,81 @@
+program prediccion_siguiente_numero
+    implicit none
+    integer, dimension(:), allocatable :: serie_completa
+    integer, dimension(6) :: serie
+    integer :: i, n_ceros, n_unos, total, siguiente_numero
+    character(len=1) :: continuar
+    integer :: size_completa, new_size
+
+    ! Inicializar la serie completa como vacía
+    allocate(serie_completa(0))
+
+    do
+        print *, "Introduce una serie de 6 números (0 o 1):"
+
+        ! Pedir la serie de 6 números
+        do i = 1, 6
+            do
+                print *, "Introduce el número ", i, ": "
+                read *, serie(i)
+                if (serie(i) == 0 .or. serie(i) == 1) exit
+                print *, "Por favor, introduce un número válido (0 o 1)."
+            end do
+        end do
+
+        ! Expansión de la serie completa
+        size_completa = size(serie_completa)
+        new_size = size_completa + 6
+        call expand_serie(serie_completa, serie, new_size)
+
+        ! Contar los ceros y unos en la serie completa
+        n_ceros = count(serie_completa == 0)
+        n_unos = count(serie_completa == 1)
+        total = size(serie_completa)
+
+        ! Calcular probabilidades
+        print *, "Probabilidad de 0: ", real(n_ceros) / real(total)
+        print *, "Probabilidad de 1: ", real(n_unos) / real(total)
+
+        ! Determinar el siguiente número más probable
+        if (n_ceros > n_unos) then
+            siguiente_numero = 0
+        else if (n_unos > n_ceros) then
+            siguiente_numero = 1
+        else
+            print *, "No se puede predecir, las probabilidades son iguales."
+            siguiente_numero = -1
+        end if
+
+        if (siguiente_numero /= -1) print *, "El número más probable que sigue es: ", siguiente_numero
+
+        ! Preguntar al usuario si quiere continuar
+        print *, "¿Quieres introducir otra serie de 6 números? (s/n): "
+        read *, continuar
+        if (continuar /= 's' .and. continuar /= 'S') exit
+
+    end do
+
+    print *, "Finalizando el programa."
+
+contains
+
+    ! Subrutina para expandir la serie completa con una nueva serie
+    subroutine expand_serie(serie_completa, nueva_serie, new_size)
+        integer, dimension(:), allocatable :: serie_completa
+        integer, dimension(6), intent(in) :: nueva_serie
+        integer, intent(in) :: new_size
+        integer :: i
+
+        ! Redimensionar la serie completa
+        integer, dimension(new_size) :: temp
+        ! Copiar los datos existentes a la nueva serie
+        if (size(serie_completa) > 0) then
+            temp(1:size(serie_completa)) = serie_completa
+        end if
+        ! Añadir la nueva serie al final
+        temp(size(serie_completa)+1:) = nueva_serie
+        ! Asignar la nueva serie completa
+        serie_completa = temp
+    end subroutine expand_serie
+
+end program prediccion_siguiente_numero
