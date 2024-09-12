@@ -1,0 +1,1 @@
+FORTRAN (FORmula TRANslation) fue el primer lenguaje de programación de alto nivel, desarrollado en la década de 1950 para aplicaciones científicas y de ingeniería. Su sintaxis está diseñada para ser similar a las expresiones matemáticas, lo que facilitó su adopción en esos campos.
